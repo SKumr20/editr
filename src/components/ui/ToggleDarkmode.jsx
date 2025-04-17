@@ -3,6 +3,7 @@ import React from 'react';
 import { Sun, Moon } from 'lucide-react'; 
 import { useTheme } from 'next-themes';
 import { Button } from './button';
+import { Toggle } from './toggle';
 import { motion } from 'framer-motion';
 
 const ToggleDarkmode = () => {
@@ -14,7 +15,7 @@ const ToggleDarkmode = () => {
   };
 
   return (
-    <Button onClick={toggleTheme} size="sm" className="p-4">
+    <Toggle onClick={toggleTheme} size="sm" className="p-4">
     <motion.div
         initial={{ y: 0, opacity: 1 }}
         animate={isDark ? { y: -40, opacity: 0 } : { y: 0, opacity: 1 }}
@@ -33,7 +34,7 @@ const ToggleDarkmode = () => {
         <Moon className="scale-120" />
       </motion.div>
        
-    </Button>
+    </Toggle>
   );
 };
 
