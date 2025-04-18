@@ -6,13 +6,13 @@ const Hero = () => {
     <BackgroundGradientAnimation>
       <div className="absolute z-50 inset-0 flex flex-col gap-10 items-center justify-center px-4 pointer-events-none text-center">
         {/* Heading div with textflip */}
-        <div className="font-extrabold text-7xl flex flex-col gap-4 items-center">
+        <div className="font-extrabold text-6xl md:text-7xl flex flex-col items-center">
           <p className="leading-tight">The all in one editor for your</p>
           <div className="flex flex-wrap items-center justify-center">
             <div className="inline-block overflow-hidden">
               <TextFlip className="text-7xl" />
             </div>
-            <span className="ml-2 md:ml-4">needs</span>
+            <span className="ml-2 md:ml-4">needs.</span>
           </div>
         </div>
         {/* Desctiption text */}
