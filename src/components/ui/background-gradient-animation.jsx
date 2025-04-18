@@ -1,16 +1,24 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
+import { useTheme } from "next-themes";
 
 export const BackgroundGradientAnimation = ({
-  gradientBackgroundStart = "rgb(245, 245, 245)",
-  gradientBackgroundEnd = "rgb(255, 255, 255)",
-  firstColor = "166, 243, 255",  
-secondColor = "254, 202, 202", 
-thirdColor = "187, 247, 208",  
-fourthColor = "221, 214, 254", 
-fifthColor = "252, 231, 243",  
-pointerColor = "255, 0, 80",   
+  lightGradientBackgroundStart = "rgb(245, 245, 245)",
+  lightGradientBackgroundEnd = "rgb(255, 255, 255)",
+  darkGradientBackgroundStart = "rgb(10, 10, 10)",
+  darkGradientBackgroundEnd = "rgb(30, 30, 30)",
+  lightFirstColor = "166, 243, 255",  
+  lightSecondColor = "254, 202, 202", 
+  lightThirdColor = "187, 247, 208", 
+  lightFourthColor = "221, 214, 254", 
+  lightFifthColor = "252, 231, 243",
+  darkFirstColor = "30, 64, 175",  
+  darkSecondColor = "157, 23, 77", 
+  darkThirdColor = "6, 95, 70", 
+  darkFourthColor = "91, 33, 182", 
+  darkFifthColor = "131, 24, 67",  
+  pointerColor = "255, 0, 80",   
   size = "80%",
   blendingValue = "hard-light",
   children,
@@ -19,36 +27,86 @@ pointerColor = "255, 0, 80",
   containerClassName
 }) => {
   const interactiveRef = useRef(null);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
+  // Cursor movement state
   const [curX, setCurX] = useState(0);
   const [curY, setCurY] = useState(0);
   const [tgX, setTgX] = useState(0);
   const [tgY, setTgY] = useState(0);
+  
+  // Browser detection
+  const [isSafari, setIsSafari] = useState(false);
+  
+  // Use mounted state to avoid hydration mismatch
   useEffect(() => {
-    document.body.style.setProperty("--gradient-background-start", gradientBackgroundStart);
-    document.body.style.setProperty("--gradient-background-end", gradientBackgroundEnd);
-    document.body.style.setProperty("--first-color", firstColor);
-    document.body.style.setProperty("--second-color", secondColor);
-    document.body.style.setProperty("--third-color", thirdColor);
-    document.body.style.setProperty("--fourth-color", fourthColor);
-    document.body.style.setProperty("--fifth-color", fifthColor);
-    document.body.style.setProperty("--pointer-color", pointerColor);
-    document.body.style.setProperty("--size", size);
-    document.body.style.setProperty("--blending-value", blendingValue);
+    setMounted(true);
   }, []);
+  
+  // Determine if dark mode is active
+  const isDarkMode = mounted && resolvedTheme === "dark";
 
+  // Calculate colors based on theme using useMemo to prevent unnecessary recalculations
+  const colors = useMemo(() => {
+    return {
+      gradientBackgroundStart: isDarkMode ? darkGradientBackgroundStart : lightGradientBackgroundStart,
+      gradientBackgroundEnd: isDarkMode ? darkGradientBackgroundEnd : lightGradientBackgroundEnd,
+      firstColor: isDarkMode ? darkFirstColor : lightFirstColor,
+      secondColor: isDarkMode ? darkSecondColor : lightSecondColor,
+      thirdColor: isDarkMode ? darkThirdColor : lightThirdColor,
+      fourthColor: isDarkMode ? darkFourthColor : lightFourthColor,
+      fifthColor: isDarkMode ? darkFifthColor : lightFifthColor
+    };
+  }, [
+    isDarkMode,
+    darkGradientBackgroundStart, lightGradientBackgroundStart,
+    darkGradientBackgroundEnd, lightGradientBackgroundEnd,
+    darkFirstColor, lightFirstColor,
+    darkSecondColor, lightSecondColor,
+    darkThirdColor, lightThirdColor,
+    darkFourthColor, lightFourthColor,
+    darkFifthColor, lightFifthColor
+  ]);
+
+  // Apply CSS variables only once when component mounts and when theme changes
   useEffect(() => {
-    function move() {
-      if (!interactiveRef.current) {
-        return;
-      }
-      setCurX(curX + (tgX - curX) / 20);
-      setCurY(curY + (tgY - curY) / 20);
-      interactiveRef.current.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
-    }
+    if (!mounted) return;
+    
+    const root = document.documentElement;
+    root.style.setProperty("--gradient-background-start", colors.gradientBackgroundStart);
+    root.style.setProperty("--gradient-background-end", colors.gradientBackgroundEnd);
+    root.style.setProperty("--first-color", colors.firstColor);
+    root.style.setProperty("--second-color", colors.secondColor);
+    root.style.setProperty("--third-color", colors.thirdColor);
+    root.style.setProperty("--fourth-color", colors.fourthColor);
+    root.style.setProperty("--fifth-color", colors.fifthColor);
+    root.style.setProperty("--pointer-color", pointerColor);
+    root.style.setProperty("--size", size);
+    root.style.setProperty("--blending-value", blendingValue);
+  }, [colors, pointerColor, size, blendingValue, mounted]);
 
-    move();
-  }, [tgX, tgY]);
+  // Use requestAnimationFrame for smoother cursor movement
+  useEffect(() => {
+    if (!interactive) return;
+    
+    let animationFrameId;
+    
+    const move = () => {
+      if (interactiveRef.current) {
+        setCurX(prev => prev + (tgX - prev) / 20);
+        setCurY(prev => prev + (tgY - prev) / 20);
+        interactiveRef.current.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
+      }
+      animationFrameId = requestAnimationFrame(move);
+    };
+    
+    animationFrameId = requestAnimationFrame(move);
+    
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [tgX, tgY, curX, curY, interactive]);
 
   const handleMouseMove = (event) => {
     if (interactiveRef.current) {
@@ -58,15 +116,18 @@ pointerColor = "255, 0, 80",
     }
   };
 
-  const [isSafari, setIsSafari] = useState(false);
+  // Safari detection with useEffect to avoid hydration mismatch
   useEffect(() => {
     setIsSafari(/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
   }, []);
 
+  // Use data attributes for theme to avoid FOUC (Flash of Unstyled Content)
   return (
-    (<div
+    <div
+      data-theme={isDarkMode ? "dark" : "light"}
       className={cn(
-        "h-screen w-screen relative overflow-hidden top-0 left-0 bg-[linear-gradient(40deg,var(--gradient-background-start),var(--gradient-background-end))]",
+        "h-screen w-screen relative overflow-hidden top-0 left-0 transition-colors duration-300",
+        "bg-[linear-gradient(40deg,var(--gradient-background-start),var(--gradient-background-end))]",
         containerClassName
       )}>
       <svg className="hidden">
@@ -140,6 +201,6 @@ pointerColor = "255, 0, 80",
             )}></div>
         )}
       </div>
-    </div>)
+    </div>
   );
 };
