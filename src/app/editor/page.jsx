@@ -1,6 +1,9 @@
+import Editor from "@/components/editor/Editor"
 const page = () => {
   return (
-    <div>page</div>
+    <div className="mt-30 mx-10 md:mx-40">
+      <Editor />
+    </div>
   )
 }
 
