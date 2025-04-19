@@ -3,7 +3,7 @@ import { TextFlip } from "../ui/TextFlip";
 
 const Hero = () => {
   return (
-    <BackgroundGradientAnimation>
+    <BackgroundGradientAnimation >
       {/* Navbar has z-50, This hero has z-40 to prevent overlap */}
       <div className="absolute z-40 inset-0 flex flex-col gap-10 items-center justify-center px-4 pointer-events-none text-center">
         {/* Heading div with textflip */}
