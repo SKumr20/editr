@@ -3,6 +3,7 @@ import { PencilLine } from "lucide-react";
 import GithubSmallBtn from "../ui/GithubSmallbtn";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { UserButton } from "@clerk/nextjs";
 
 const Navbar = () => {
   return (
@@ -27,6 +28,7 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <GithubSmallBtn />
           <ToggleDarkmode />
+          <UserButton />
         </div>
     </div>
   )
