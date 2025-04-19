@@ -1,11 +1,11 @@
 "use client";
 import "@blocknote/core/fonts/inter.css";
-import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import "@blocknote/shadcn/style.css";
 import { useTheme } from "next-themes";
 import { useEffect, useState, useMemo } from "react";
 import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
+import { codeBlock } from "@blocknote/code-block";
 
 // Save contents to local storage.
 async function saveToStorage(jsonBlocks) {
@@ -31,12 +31,17 @@ export default function Editor() {
     });
   }, []);
 
-  // Memoize editor creation based on the initial content.
+  // Create the editor with inital content 
+  // SEE DOCS
   const editor = useMemo(() => {
     if (initialContent === "loading") {
       return undefined;
     }
-    return BlockNoteEditor.create({ initialContent });
+    return BlockNoteEditor.create({
+       initialContent,
+       // add plugins here
+       extensions: [codeBlock],
+    });
   }, [initialContent]);
 
   // If the editor is not created yet, show loading text.
