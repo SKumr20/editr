@@ -36,7 +36,7 @@
     "src/**/*.tsx",  // Include TypeScript React files
     "next-env.d.ts",
     ".next/types/**/*.ts"
-  ],
+, "src/middleware.ts"  ],
   "exclude": [
     "node_modules"
   ]
