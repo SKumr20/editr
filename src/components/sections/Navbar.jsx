@@ -41,7 +41,9 @@ const Navbar = () => {
             <UserButton />
           </Authenticated>
           <Unauthenticated>
+          <div className="hidden md:block">
             <SignInbtn />
+          </div>
           </Unauthenticated>
           {/* Mobile menu - now using dropdown instead of sheet */}
           <div className="md:hidden flex items-center gap-2">
