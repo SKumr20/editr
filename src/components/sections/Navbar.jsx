@@ -1,3 +1,4 @@
+"use client";
 import ToggleDarkmode from "../ui/ToggleDarkmode";
 import { PencilLine, Menu } from "lucide-react";
 import GithubSmallBtn from "../ui/GithubSmallbtn";
@@ -10,6 +11,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Authenticated, Unauthenticated } from "convex/react";
+import { SignInButton } from "@clerk/nextjs";
 
 const Navbar = () => {
   return (
@@ -34,7 +37,12 @@ const Navbar = () => {
         <div className="flex items-center gap-1 md:gap-2">
           <GithubSmallBtn />
           <ToggleDarkmode />
-          <UserButton />
+          <Authenticated>
+            <UserButton />
+          </Authenticated>
+          <Unauthenticated>
+            <SignInButton />
+          </Unauthenticated>
           {/* Mobile menu - now using dropdown instead of sheet */}
           <div className="md:hidden flex items-center gap-2">
             <DropdownMenu>
