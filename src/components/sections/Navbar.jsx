@@ -17,7 +17,7 @@ import SignInbtn from "../ui/SignInbtn";
 const Navbar = () => {
   return (
     <div className="fixed top-4 left-0 right-0 z-50 flex items-center justify-between p-2 mx-10 md:mx-20 lg:mx:50 xl:mx-80 bg-background backdrop-blur-md rounded-lg border border-border shadow-xs">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ml-1">
         {/* Left - Title and logo */}
         <Link href='/' className="flex items-center gap-2 hover:opacity-60 transition duration-200">
           <PencilLine strokeWidth={1.5} />
