@@ -1,9 +1,15 @@
 import ToggleDarkmode from "../ui/ToggleDarkmode";
-import { PencilLine } from "lucide-react";
+import { PencilLine, Menu } from "lucide-react";
 import GithubSmallBtn from "../ui/GithubSmallbtn";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { UserButton } from "@clerk/nextjs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   return (
@@ -15,7 +21,7 @@ const Navbar = () => {
           <h2 className="font-bold" >Editr</h2>
         </Link>
         {/* Nav links */}
-        <div>
+        <div className="hidden md:flex">
           <Link href='/editor'>
             <Button variant='nav' size='sm'>Get started</Button>
           </Link>
@@ -25,13 +31,40 @@ const Navbar = () => {
         </div>
       </div>
         {/* Right side div */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
           <GithubSmallBtn />
           <ToggleDarkmode />
           <UserButton />
+          {/* Mobile menu - now using dropdown instead of sheet */}
+          <div className="md:hidden flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost">
+                  <Menu className="scale-120" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem asChild>
+                  <Link href="/" className="w-full cursor-pointer">
+                    Home
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/editor" className="w-full cursor-pointer">
+                    Get Started
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="#" className="w-full cursor-pointer">
+                    Changelog
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
     </div>
   )
 }
 
-export default Navbar
+export default Navbar;
