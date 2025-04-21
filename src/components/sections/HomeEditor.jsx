@@ -12,7 +12,7 @@ const HomeEditor = () => {
           </p>
         </div>
         {/* Editor Div */}
-        <div className="p-4 border-2 w-full md:w-3xl rounded-xl h-[600px]">
+        <div className="p-4 border-2 w-full max-w-xl rounded-xl h-[600px]">
           <EditorHome />
         </div>
     </div>

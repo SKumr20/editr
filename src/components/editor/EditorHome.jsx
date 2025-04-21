@@ -2,66 +2,55 @@
 import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView } from "@blocknote/shadcn";
 import "@blocknote/shadcn/style.css";
+import { useCreateBlockNote } from "@blocknote/react";
+import { useState } from "react";
 import { useTheme } from "next-themes";
-import { useEffect, useState, useMemo } from "react";
-import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
-import { codeBlock } from "@blocknote/code-block";
 
-// Save contents to local storage.
-async function saveToStorage(jsonBlocks) {
-  localStorage.setItem("editorContent", JSON.stringify(jsonBlocks));
-}
 
-// Get previously stored editor contents.
-async function loadFromStorage() {
-  const storageString = localStorage.getItem("editorContent");
-  return storageString ? JSON.parse(storageString) : undefined;
-}
 
-export default function Editor() {
+export default function App() {
+
   // Get the theme
   const { resolvedTheme } = useTheme();
-  
-  const [initialContent, setInitialContent] = useState("loading"); // Remove TypeScript type annotation here
 
-  // Load the content from local storage when the component mounts.
-  useEffect(() => {
-    loadFromStorage().then((content) => {
-      setInitialContent(content);
-    });
-  }, []);
+  // Stores the document JSON.
+  const [blocks, setBlocks] = useState([]);
 
-  // Create the editor with inital content 
-  // SEE DOCS
-  const editor = useMemo(() => {
-    if (initialContent === "loading") {
-      return undefined;
-    }
-    return BlockNoteEditor.create({
-       initialContent,
-       // add plugins here
-       extensions: [codeBlock],
-    });
-  }, [initialContent]);
+  // Creates a new editor instance.
+  const editor = useCreateBlockNote({
+    initialContent: [
+      {
+        type: "heading",
+        content: "Welcome To Editr.",
+        props: { level: '2'}
+      },
+      {
+        type: "image",
+        props: { 
+          url: "https://cataas.com/cat/gif",
+          height: '100',
+          width: '100',
+        }
+      },
+      {
+        type: "heading",
+        content: "Start Typing below.",
+        props: { level: '3'}
+      },
+    ],
+  });
 
-  // If the editor is not created yet, show loading text.
-  if (editor === undefined) {
-    return "Loading content...";
-  }
-
-  // Save content to local storage whenever it changes.
-  const handleEditorChange = () => {
-    saveToStorage(editor.document);
-  };
-
+  // Renders the editor instance and its document JSON.
   return (
-    <div className="h-screen">
-      <BlockNoteView
-        editor={editor}
-        theme={resolvedTheme}
-        className="h-full w-full"
-        onChange={handleEditorChange}
-      />
+    <div className="h-full overflow-auto rounded-lg">
+        <BlockNoteView
+          editor={editor}
+          theme={resolvedTheme}
+          onChange={() => {
+            // Saves the document JSON to state.
+            setBlocks(editor.document);
+          }}
+        />
     </div>
   );
 }
