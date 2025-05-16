@@ -1,58 +1,51 @@
 "use client";
+
 import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView } from "@blocknote/shadcn";
 import "@blocknote/shadcn/style.css";
 import { useTheme } from "next-themes";
-import { useEffect, useState, useMemo } from "react";
-import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
+import { useEffect, useState } from "react";
 import { codeBlock } from "@blocknote/code-block";
+import { useCreateBlockNoteWithLiveblocks } from "@liveblocks/react-blocknote";
 
-// Save contents to local storage.
-async function saveToStorage(jsonBlocks) {
-  localStorage.setItem("editorContent", JSON.stringify(jsonBlocks));
-}
-
-// Get previously stored editor contents.
+// Fallback for loading from localStorage before room is ready
 async function loadFromStorage() {
   const storageString = localStorage.getItem("editorContent");
   return storageString ? JSON.parse(storageString) : undefined;
 }
 
-export default function Editor() {
-  // Get the theme
-  const { resolvedTheme } = useTheme();
-  
-  const [initialContent, setInitialContent] = useState("loading"); // Remove TypeScript type annotation here
+// Save content locally as backup (optional)
+async function saveToStorage(jsonBlocks) {
+  localStorage.setItem("editorContent", JSON.stringify(jsonBlocks));
+}
 
-  // Load the content from local storage when the component mounts.
+export default function Editor() {
+  const { resolvedTheme } = useTheme();
+  const [initialContent, setInitialContent] = useState(undefined);
+
+  // Load local content once on mount (optional for fallback or pre-population)
   useEffect(() => {
     loadFromStorage().then((content) => {
-      setInitialContent(content);
+      if (content) {
+        setInitialContent(content);
+      }
     });
   }, []);
 
-  // Create the editor with inital content 
-  // SEE DOCS
-  const editor = useMemo(() => {
-    if (initialContent === "loading") {
-      return undefined;
-    }
-    return BlockNoteEditor.create({
-       initialContent,
-       // add plugins here
-       extensions: [codeBlock],
-    });
-  }, [initialContent]);
+  // Create editor instance using Liveblocks
+  const editor = useCreateBlockNoteWithLiveblocks({
+    extensions: [codeBlock],
+    initialContent,
+  });
 
-  // If the editor is not created yet, show loading text.
-  if (editor === undefined) {
-    return "Loading content...";
-  }
-
-  // Save content to local storage whenever it changes.
+  // Optional: Store content changes locally
   const handleEditorChange = () => {
-    saveToStorage(editor.document);
+    if (editor) {
+      saveToStorage(editor.document);
+    }
   };
+
+  if (!editor) return "Loading collaborative editor...";
 
   return (
     <div className="h-screen">
