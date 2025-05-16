@@ -1,7 +1,7 @@
 /******* IMP ********/
 // USE THE DYNAMIC VERSION ONLY
 import { Editor } from "../../components/editor/DynamicEditor";
-import { Room } from "app/room"; // Import the created liveblocks room
+import { Room } from "app/Room";
 
 const page = () => {
   return (
