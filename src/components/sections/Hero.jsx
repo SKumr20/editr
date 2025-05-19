@@ -1,5 +1,7 @@
 import { BackgroundGradientAnimation } from "../ui/background-gradient-animation";
 import { TextFlip } from "../ui/TextFlip";
+import HeroButtons from "../ui/HeroButtons";
+
 
 const Hero = () => {
   return (
@@ -20,6 +22,7 @@ const Hero = () => {
         <p className="text-3xl opacity-60 font-light tracking-tighter max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-4xl mx-auto">
           Editr is a simple, free and easy to use online editor, with all the necessary features, clean UI to make quick notes, share and collaborate easily.
         </p>
+        <HeroButtons />
       </div>
     </BackgroundGradientAnimation>
   )

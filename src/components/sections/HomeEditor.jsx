@@ -1,4 +1,5 @@
 import { EditorHome } from "../editor/DynamicHomeEditor.jsx"
+
 const HomeEditor = () => {
   return (
     <div className="flex flex-col md:flex-row justify-between gap-10 p-8 md:p-18 mt-10">

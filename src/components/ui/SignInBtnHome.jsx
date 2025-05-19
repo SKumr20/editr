@@ -1,12 +1,12 @@
 import { SignInButton } from "@clerk/nextjs";
 import { InteractiveHoverButton } from "../magicui/interactive-hover-button";
 
-const SignInbtn = () => {
+const SignInbtnHome = () => {
   return (
-    <InteractiveHoverButton className="pointer-events-auto border-none border-0 outline-none focus:ring-0">
+    <InteractiveHoverButton className="scale-125 pointer-events-auto border-none border-0 outline-none focus:ring-0">
         <SignInButton />
     </InteractiveHoverButton>
   )
 }
 
-export default SignInbtn
+export default SignInbtnHome
